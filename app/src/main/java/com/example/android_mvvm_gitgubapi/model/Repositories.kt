@@ -1,6 +1,8 @@
 package com.example.android_mvvm_gitgubapi.model
 
-data class Repository(
+class Repositories : ArrayList<RepositoriesItem>()
+
+data class RepositoriesItem(
     val allow_forking: Boolean,
     val archive_url: String,
     val archived: Boolean,
@@ -17,7 +19,7 @@ data class Repository(
     val created_at: String,
     val default_branch: String,
     val deployments_url: String,
-    val description: String,
+    val description: String?,
     val disabled: Boolean,
     val downloads_url: String,
     val events_url: String,
@@ -36,7 +38,7 @@ data class Repository(
     val has_pages: Boolean,
     val has_projects: Boolean,
     val has_wiki: Boolean,
-    val homepage: Any,
+    val homepage: String,
     val hooks_url: String,
     val html_url: String,
     val id: Int,
@@ -46,14 +48,13 @@ data class Repository(
     val issues_url: String,
     val keys_url: String,
     val labels_url: String,
-    val language: String,
+    val language: String?,
     val languages_url: String,
-    val license: Any,
+    val license: License,
     val merges_url: String,
     val milestones_url: String,
     val mirror_url: Any,
     val name: String,
-    val network_count: Int,
     val node_id: String,
     val notifications_url: String,
     val open_issues: Int,
@@ -68,13 +69,11 @@ data class Repository(
     val stargazers_count: Int,
     val stargazers_url: String,
     val statuses_url: String,
-    val subscribers_count: Int,
     val subscribers_url: String,
     val subscription_url: String,
     val svn_url: String,
     val tags_url: String,
     val teams_url: String,
-    val temp_clone_token: Any,
     val topics: List<Any>,
     val trees_url: String,
     val updated_at: String,
@@ -84,3 +83,42 @@ data class Repository(
     val watchers_count: Int,
     val web_commit_signoff_required: Boolean
 )
+
+data class License(
+    val key: String,
+    val name: String,
+    val node_id: String,
+    val spdx_id: String,
+    val url: String
+)
+
+data class Owner(
+    val avatar_url: String,
+    val events_url: String,
+    val followers_url: String,
+    val following_url: String,
+    val gists_url: String,
+    val gravatar_id: String,
+    val html_url: String,
+    val id: Int,
+    val login: String,
+    val node_id: String,
+    val organizations_url: String,
+    val received_events_url: String,
+    val repos_url: String,
+    val site_admin: Boolean,
+    val starred_url: String,
+    val subscriptions_url: String,
+    val type: String,
+    val url: String
+)
+
+data class UserRepositories(
+    val name: String,
+    val html_url: String,
+    val description: String,
+    val stargazers_count: Int,
+    val language: String
+)
+
+

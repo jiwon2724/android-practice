@@ -6,27 +6,25 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.converter.gson.GsonConverterFactory
 
 object Retrofit {
-    object Retrofit {
-        private var instance : retrofit2.Retrofit? = null
-        private val gson = GsonBuilder().setLenient().create()
+    private var instance : retrofit2.Retrofit? = null
+    private val gson = GsonBuilder().setLenient().create()
 
 
-        fun getInstance() : retrofit2.Retrofit {
-            if(instance == null){
-                val interceptor = HttpLoggingInterceptor()
-                interceptor.level = HttpLoggingInterceptor.Level.BODY
+    fun getInstance() : retrofit2.Retrofit {
+        if(instance == null){
+            val interceptor = HttpLoggingInterceptor()
+            interceptor.level = HttpLoggingInterceptor.Level.BODY
 
-                val client = OkHttpClient.Builder()
-                    .addInterceptor(interceptor)
-                    .build()
+            val client = OkHttpClient.Builder()
+                .addInterceptor(interceptor)
+                .build()
 
-                instance = retrofit2.Retrofit.Builder()
-                    .baseUrl("https://api.github.com/repos/")
-                    .client(client)
-                    .addConverterFactory(GsonConverterFactory.create(gson))
-                    .build()
-            }
-            return instance!!
+            instance = retrofit2.Retrofit.Builder()
+                .baseUrl("https://api.github.com/repos/")
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build()
         }
+        return instance!!
     }
 }
