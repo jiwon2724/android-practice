@@ -12,7 +12,7 @@ class MainRepository {
 
     suspend fun getUserRepositories(username: String): UserInfo? {
         val response = repository.getRepository(username)
-        return if(response.isSuccessful) {
+        return if(response.isSuccessful && response.body()!!.isNotEmpty()) {
             val user = UserInfo(
                 avatar_url = response.body()!![0].owner.avatar_url,
                 url = response.body()!![0].owner.html_url,
