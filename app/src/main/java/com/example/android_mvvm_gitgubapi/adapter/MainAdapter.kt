@@ -10,29 +10,17 @@ import com.example.android_mvvm_gitgubapi.adapter.listener.MainListener
 import com.example.android_mvvm_gitgubapi.databinding.RepositoriesItemBinding
 import com.example.android_mvvm_gitgubapi.model.RepositoriesItem
 import com.example.android_mvvm_gitgubapi.model.UserRepositories
+import com.example.android_mvvm_gitgubapi.ui.RepositoriesItemUiState
+import com.example.android_mvvm_gitgubapi.ui.RepositoriesUiState
 
-class MainAdapter : ListAdapter<UserRepositories, MainAdapter.MainViewHolder>(MainDiffCallback()) {
+// UserRepositories
+// RepositoriesUiState
+class MainAdapter : ListAdapter<RepositoriesItemUiState, MainAdapter.MainViewHolder>(MainDiffCallback()) {
 
     lateinit var clickListener: MainListener
 
     fun setOnItemClickListener(listener : MainListener) {
         this.clickListener = listener
-    }
-
-    companion object {
-        class MainDiffCallback : DiffUtil.ItemCallback<UserRepositories>() {
-            override fun areItemsTheSame(oldItem: UserRepositories, newItem: UserRepositories): Boolean {
-                // 현재 리스트의 노출하고 있는 아이템과, 새로운 아이템이 같은지 비교(고유값으로 비교)
-                // 여기선 레포지토리의 url을 비교해준다.
-                return oldItem.html_url == newItem.html_url
-            }
-
-            override fun areContentsTheSame(oldItem: UserRepositories, newItem: UserRepositories): Boolean {
-                // 현재 리스트에 노출하고 있는 아이템과, 새로운 아이템의 equals 비교
-                // areItemsTheSame에서 true가 나올경우 추가적으로 비교
-                return oldItem == newItem
-            }
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
@@ -45,9 +33,10 @@ class MainAdapter : ListAdapter<UserRepositories, MainAdapter.MainViewHolder>(Ma
         holder.bind(getItem(position))
     }
 
-
+    //
+    // RepositoriesItemUiState
    inner class MainViewHolder(private val binding: RepositoriesItemBinding) : RecyclerView.ViewHolder(binding.root) {
-       fun bind(userRepositories: UserRepositories) {
+       fun bind(userRepositories: RepositoriesItemUiState) {
            binding.apply {
                repositoryName.text = userRepositories.name
                repositoryDes.text = userRepositories.description
@@ -59,5 +48,19 @@ class MainAdapter : ListAdapter<UserRepositories, MainAdapter.MainViewHolder>(Ma
            }
        }
    }
+}
+
+class MainDiffCallback : DiffUtil.ItemCallback<RepositoriesItemUiState>() {
+    override fun areItemsTheSame(oldItem: RepositoriesItemUiState, newItem: RepositoriesItemUiState): Boolean {
+        // 현재 리스트의 노출하고 있는 아이템과, 새로운 아이템이 같은지 비교(고유값으로 비교)
+        // 여기선 레포지토리의 url을 비교해준다.
+        return oldItem.html_url == newItem.html_url
+    }
+
+    override fun areContentsTheSame(oldItem: RepositoriesItemUiState, newItem: RepositoriesItemUiState): Boolean {
+        // 현재 리스트에 노출하고 있는 아이템과, 새로운 아이템의 equals 비교
+        // areItemsTheSame에서 true가 나올경우 추가적으로 비교
+        return oldItem == newItem
+    }
 }
 

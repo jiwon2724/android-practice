@@ -8,16 +8,20 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.net.toUri
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.android_mvvm_gitgubapi.adapter.MainAdapter
 import com.example.android_mvvm_gitgubapi.adapter.listener.MainListener
 import com.example.android_mvvm_gitgubapi.databinding.ActivityMainBinding
+import com.example.android_mvvm_gitgubapi.model.Repositories
+import com.example.android_mvvm_gitgubapi.model.RepositoriesItem
 import com.example.android_mvvm_gitgubapi.model.UserRepositories
 import com.example.android_mvvm_gitgubapi.repository.MainRepository
+import com.example.android_mvvm_gitgubapi.ui.RepositoriesItemUiState
 import com.example.android_mvvm_gitgubapi.viewmodel.MainViewModel
 import com.example.android_mvvm_gitgubapi.viewmodel.MainViewModelFactory
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
@@ -32,9 +36,20 @@ class MainActivity : AppCompatActivity() {
 
         /** 검색 클릭 **/
         binding.searchButton.setOnClickListener {
-            viewModel.getRepositories(binding.userNameEditText.text.toString())
+            viewModel.getRepositoriesFlow(binding.userNameEditText.text.toString()) // Flow
+           //  viewModel.getRepositoriesFlow(binding.userNameEditText.text.toString()) // LiveData
         }
 
+        /** Flow **/
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.repositoriesUiState.collect {
+                    Log.d("lifecycleScope : ", it.toString())
+                }
+            }
+        }
+
+        /** LiveData **/
         viewModel.repositoriesResult.observe(this) {
             when (it) {
                 null -> {
@@ -43,7 +58,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 else -> {
                     hideUiLayoutOnOff(0) // VISIBLE
-                    setData(it.avatar_url, it.login, it.url, it.repositories)
+                   //  setData(it.avatar_url, it.login, it.url, it.repositories)
                 }
             }
         }
@@ -54,13 +69,12 @@ class MainActivity : AppCompatActivity() {
         binding.profileLayout.visibility = stateNumber
     }
 
-    private fun setData(avatar_url: String, login: String, url: String, repositories: ArrayList<UserRepositories>) {
+    private fun setData(avatar_url: String, login: String, url: String, repositories: ArrayList<RepositoriesItemUiState>) {
         Glide.with(this).load(avatar_url).into(binding.profileImageView)
         binding.profileUsernameTextView.text = login
         binding.projectGitUrlTextView.text = url
 
-        val mainAdapter = MainAdapter()
-        mainAdapter.apply {
+        val mainAdapter = MainAdapter().apply {
             submitList(repositories)
             setOnItemClickListener(object: MainListener{
                 override fun onClick(view: View, position: Int) {
