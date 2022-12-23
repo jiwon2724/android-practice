@@ -15,7 +15,7 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
         get() = _repositoriesResult
 
     private val _repositoriesUiState = MutableStateFlow(RepositoriesUiState())
-    val repositoriesUiState: StateFlow<RepositoriesUiState>
+    val repositoriesUiState: StateFlow<RepositoriesUiState?>
         get() = _repositoriesUiState.asStateFlow()
 
     /** asStateFLow()에 관하여..
@@ -34,9 +34,9 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
     }
 
     fun getRepositoriesFlow(username: String) = viewModelScope.launch {
-//        mainRepository.getUserRepositoriesFlow(username).collect {
-//            _repositoriesUiState.value = it
-//        }
+        mainRepository.getUserRepositoriesFlow(username).collect {
+            _repositoriesUiState.value = it
+        }
     }
 }
 

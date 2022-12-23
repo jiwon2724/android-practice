@@ -41,10 +41,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         /** Flow **/
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.repositoriesUiState.collect {
-                    Log.d("lifecycleScope : ", it.toString())
+        // lifecycle이 파괴되면(onDestroy 호출 시) 이 스코프는 취소된다.
+        // LifecycleOwner의 Lifecycle에 CoroutineScope가 연결되어있음!
+        // launchWhenStarted : onStart일 경우에 실행한다.
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.repositoriesUiState.collect {
+                it?.let {
+                    hideUiLayoutOnOff(0) // VISIBLE
+                    setData(it.avatar_url, it.login, it.url, it.repositories)
                 }
             }
         }
@@ -69,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         binding.profileLayout.visibility = stateNumber
     }
 
-    private fun setData(avatar_url: String, login: String, url: String, repositories: ArrayList<RepositoriesItemUiState>) {
+    private fun setData(avatar_url: String?, login: String?, url: String?, repositories: ArrayList<RepositoriesItemUiState>) {
         Glide.with(this).load(avatar_url).into(binding.profileImageView)
         binding.profileUsernameTextView.text = login
         binding.projectGitUrlTextView.text = url
