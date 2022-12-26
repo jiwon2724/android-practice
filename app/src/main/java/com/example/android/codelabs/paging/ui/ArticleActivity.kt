@@ -31,7 +31,7 @@ import com.example.android.codelabs.paging.databinding.ActivityArticlesBinding
 import kotlinx.coroutines.launch
 
 class ArticleActivity : AppCompatActivity() {
-
+    //
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityArticlesBinding.inflate(layoutInflater)
