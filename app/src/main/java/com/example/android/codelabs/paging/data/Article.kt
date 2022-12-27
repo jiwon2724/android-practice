@@ -22,6 +22,8 @@ import java.time.format.DateTimeFormatter
 /**
  * Immutable model class for an article
  */
+
+// PagingSource는 Article을 로드한다.
 data class Article(
     val id: Int,
     val title: String,

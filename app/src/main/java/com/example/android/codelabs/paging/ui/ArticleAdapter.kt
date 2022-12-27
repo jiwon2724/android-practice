@@ -18,6 +18,8 @@ package com.example.android.codelabs.paging.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingData
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.example.android.codelabs.paging.data.Article
@@ -26,7 +28,14 @@ import com.example.android.codelabs.paging.databinding.ArticleViewholderBinding
 /**
  * Adapter for an [Article] [List].
  */
-class ArticleAdapter : ListAdapter<Article, ArticleViewHolder>(ARTICLE_DIFF_CALLBACK) {
+
+/**
+ * PagingData를 RecyclerView에 바인딩하려면 PagingDataAdapter를 사용해야한다.
+ * PagingData 콘텐츠가 로드될 때마다 PagingDataAdapter에서 알림을 받은 다음 RecyclerView에 업데트라하는 신호를 보낸다.
+ *
+ *
+ * **/
+class ArticleAdapter : PagingDataAdapter<Article, ArticleViewHolder>(ARTICLE_DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder =
         ArticleViewHolder(
