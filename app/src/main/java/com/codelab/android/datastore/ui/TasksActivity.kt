@@ -32,6 +32,8 @@ class TasksActivity : AppCompatActivity() {
 
     private lateinit var viewModel: TasksViewModel
 
+    // test
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTasksBinding.inflate(layoutInflater)
