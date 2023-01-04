@@ -18,8 +18,10 @@ package com.codelab.android.datastore.data
 
 import android.content.Context
 import androidx.core.content.edit
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.*
+import kotlinx.coroutines.flow.*
+import java.io.IOException
 
 private const val USER_PREFERENCES_NAME = "user_preferences"
 private const val SORT_ORDER_KEY = "sort_order"
@@ -31,65 +33,57 @@ enum class SortOrder {
     BY_DEADLINE_AND_PRIORITY
 }
 
-/**
- * Class that handles saving and retrieving user preferences
- */
-class UserPreferencesRepository private constructor(context: Context) {
+private object PreferencesKeys {
+    val SORT_ORDER = stringPreferencesKey("sort_order")
+    val SHOW_COMPLETED = booleanPreferencesKey("show_completed")
+}
 
-    private val sharedPreferences =
-        context.applicationContext.getSharedPreferences(USER_PREFERENCES_NAME, Context.MODE_PRIVATE)
+data class UserPreferences(
+    val showCompleted: Boolean,
+    val sortOrder: SortOrder
+)
 
-    // Keep the sort order as a stream of changes
-    private val _sortOrderFlow = MutableStateFlow(sortOrder)
-    val sortOrderFlow: StateFlow<SortOrder> = _sortOrderFlow
+class UserPreferencesRepository(private val dataStore: DataStore<Preferences>, context: Context) {
+    private val sharedPreferences = context.applicationContext.getSharedPreferences(USER_PREFERENCES_NAME, Context.MODE_PRIVATE)
 
-    /**
-     * Get the sort order. By default, sort order is None.
-     */
-    private val sortOrder: SortOrder
-        get() {
-            val order = sharedPreferences.getString(SORT_ORDER_KEY, SortOrder.NONE.name)
-            return SortOrder.valueOf(order ?: SortOrder.NONE.name)
+    val userPreferencesFlow: Flow<UserPreferences> = dataStore.data
+        .catch { exception ->
+            if(exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }
+        .map { preferences ->
+            val showCompleted = preferences[PreferencesKeys.SHOW_COMPLETED] ?: false
+            val sortOrder = SortOrder.valueOf(
+                preferences[PreferencesKeys.SORT_ORDER] ?: SortOrder.NONE.name
+            )
+            UserPreferences(showCompleted, sortOrder)
         }
 
-    fun enableSortByDeadline(enable: Boolean) {
-        val currentOrder = sortOrderFlow.value
-        val newSortOrder =
-            if (enable) {
-                if (currentOrder == SortOrder.BY_PRIORITY) {
-                    SortOrder.BY_DEADLINE_AND_PRIORITY
-                } else {
-                    SortOrder.BY_DEADLINE
-                }
-            } else {
-                if (currentOrder == SortOrder.BY_DEADLINE_AND_PRIORITY) {
-                    SortOrder.BY_PRIORITY
-                } else {
-                    SortOrder.NONE
-                }
+    suspend fun enableSortByDeadline(enable: Boolean) {
+        dataStore.edit { preferences ->
+            val currentOrder = SortOrder.valueOf(preferences[PreferencesKeys.SORT_ORDER] ?: SortOrder.NONE.name)
+            val newSortOrder = when(enable) {
+                true -> if(currentOrder == SortOrder.BY_PRIORITY) SortOrder.BY_DEADLINE_AND_PRIORITY else SortOrder.BY_DEADLINE
+                false -> if(currentOrder == SortOrder.BY_DEADLINE_AND_PRIORITY) SortOrder.BY_PRIORITY else SortOrder.NONE
             }
-        updateSortOrder(newSortOrder)
-        _sortOrderFlow.value = newSortOrder
+            preferences[PreferencesKeys.SORT_ORDER] = newSortOrder.name
+            updateSortOrder(newSortOrder)
+        }
     }
 
-    fun enableSortByPriority(enable: Boolean) {
-        val currentOrder = sortOrderFlow.value
-        val newSortOrder =
-            if (enable) {
-                if (currentOrder == SortOrder.BY_DEADLINE) {
-                    SortOrder.BY_DEADLINE_AND_PRIORITY
-                } else {
-                    SortOrder.BY_PRIORITY
-                }
-            } else {
-                if (currentOrder == SortOrder.BY_DEADLINE_AND_PRIORITY) {
-                    SortOrder.BY_DEADLINE
-                } else {
-                    SortOrder.NONE
-                }
+    suspend fun enableSortByPriority(enable: Boolean) {
+        dataStore.edit { preferences ->
+            val currentOrder = SortOrder.valueOf(preferences[PreferencesKeys.SORT_ORDER] ?: SortOrder.NONE.name)
+            val newSortOrder = when(enable) {
+                true -> if(currentOrder == SortOrder.BY_DEADLINE) SortOrder.BY_DEADLINE_AND_PRIORITY else SortOrder.BY_PRIORITY
+                false -> if(currentOrder == SortOrder.BY_DEADLINE_AND_PRIORITY) SortOrder.BY_DEADLINE else SortOrder.NONE
             }
-        updateSortOrder(newSortOrder)
-        _sortOrderFlow.value = newSortOrder
+            preferences[PreferencesKeys.SORT_ORDER] = newSortOrder.name
+            updateSortOrder(newSortOrder)
+        }
     }
 
     private fun updateSortOrder(sortOrder: SortOrder) {
@@ -98,20 +92,9 @@ class UserPreferencesRepository private constructor(context: Context) {
         }
     }
 
-    companion object {
-        @Volatile
-        private var INSTANCE: UserPreferencesRepository? = null
-
-        fun getInstance(context: Context): UserPreferencesRepository {
-            return INSTANCE ?: synchronized(this) {
-                INSTANCE?.let {
-                    return it
-                }
-
-                val instance = UserPreferencesRepository(context)
-                INSTANCE = instance
-                instance
-            }
+    suspend fun updateShowCompleted(showCompleted: Boolean) {
+        dataStore.edit {
+            it[PreferencesKeys.SHOW_COMPLETED] = showCompleted
         }
     }
 }
