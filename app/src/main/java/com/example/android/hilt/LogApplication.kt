@@ -17,7 +17,10 @@
 package com.example.android.hilt
 
 import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
+// DI를 사용할 수 있게 해주는 클래스를 포함된 Hilt 코드 생성을 시작한다.
 class LogApplication : Application() {
 
     lateinit var serviceLocator: ServiceLocator

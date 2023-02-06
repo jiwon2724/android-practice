@@ -30,15 +30,16 @@ import com.example.android.hilt.R
 import com.example.android.hilt.data.Log
 import com.example.android.hilt.data.LoggerLocalDataSource
 import com.example.android.hilt.util.DateFormatter
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-/**
- * Fragment that displays the database logs.
- */
+@AndroidEntryPoint
+// LogsFragment에서 Hilt를 사용하려면 해당 @AndroidEntryPoint로 주석을 달아야한다.
+// 해당 클래스의 생명주기를 따르는 의존성 컨테이너를 생성하고, LogsFragment에 인스턴스를 사입할 수 있다.
 class LogsFragment : Fragment() {
-
-    private lateinit var logger: LoggerLocalDataSource
-    private lateinit var dateFormatter: DateFormatter
-
+    // @Inject를 사용하여 Hilt에서 삽입하려는 다른 유형의 인스턴스를 필드에 삽입할 수 있다.
+    @Inject lateinit var logger: LoggerLocalDataSource
+    @Inject lateinit var dateFormatter: DateFormatter
     private lateinit var recyclerView: RecyclerView
 
     override fun onCreateView(
@@ -57,15 +58,14 @@ class LogsFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-
-        populateFields(context)
     }
 
-    private fun populateFields(context: Context) {
-        logger = (context.applicationContext as LogApplication).serviceLocator.loggerLocalDataSource
-        dateFormatter =
-            (context.applicationContext as LogApplication).serviceLocator.provideDateFormatter()
-    }
+//    // Hilt에서 이러한 필드를 대신 채워주므로 더이상 해당 메서드가 필요하지 않다.
+//    private fun populateFields(context: Context) {
+//        // Hilt를 사용하여 이런 유형의 인스턴스를 생성하고 관리할 수 있다.
+//        logger = (context.applicationContext as LogApplication).serviceLocator.loggerLocalDataSource
+//        dateFormatter = (context.applicationContext as LogApplication).serviceLocator.provideDateFormatter()
+//    }
 
     override fun onResume() {
         super.onResume()
