@@ -33,6 +33,7 @@ class ServiceLocator(applicationContext: Context) {
         "logging.db"
     ).build()
 
+    // ServiceLocator를 호출할 때 마다 동일한 LoggerLocalDataSource 반환.
     val loggerLocalDataSource = LoggerLocalDataSource(logsDatabase.logDao())
 
     fun provideDateFormatter() = DateFormatter()

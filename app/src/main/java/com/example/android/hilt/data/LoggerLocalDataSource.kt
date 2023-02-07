@@ -21,10 +21,20 @@ import android.os.Looper
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Data manager class that handles data manipulation between the database and the UI.
  */
+
+/**
+ * @Singleton 어노테이션을 사용하여 인스턴스의 범위를 컨테이너로 지정할 수 있다.
+ *  -> 인스턴스 범위를 애플리케이션 컨테이너로 지정하는 어노테이션이다.
+ *  다른 유형의 종속 항목으로 사용되는지, 삽입된 필드여야 하는지와 관계없이 애플리케이션 컨테이너에서 항상 같은 인스턴스를 제공한다.
+ *
+ *
+ * **/
+@Singleton
 class LoggerLocalDataSource @Inject constructor(private val logDao: LogDao) {
 
     private val executorService: ExecutorService = Executors.newFixedThreadPool(4)

@@ -25,7 +25,6 @@ import androidx.room.Query
  */
 @Dao
 interface LogDao {
-
     @Query("SELECT * FROM logs ORDER BY id DESC")
     fun getAll(): List<Log>
 
