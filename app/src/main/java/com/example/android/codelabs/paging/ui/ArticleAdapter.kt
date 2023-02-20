@@ -16,6 +16,7 @@
 
 package com.example.android.codelabs.paging.ui
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingData

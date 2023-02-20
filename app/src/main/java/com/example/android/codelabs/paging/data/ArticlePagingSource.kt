@@ -1,5 +1,6 @@
 package com.example.android.codelabs.paging.data
 
+import android.util.Log
 import androidx.paging.LoadState
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
@@ -42,6 +43,7 @@ class ArticlePagingSource : PagingSource<Int, Article>() {
 
         return LoadResult.Page(
             // data
+            // 0~149개의 데이터 매핑 작업
             data = range.map { number ->
                 Article(
                     id = number,

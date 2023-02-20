@@ -16,6 +16,7 @@
 
 package com.example.android.codelabs.paging.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
@@ -32,9 +33,9 @@ import kotlinx.coroutines.flow.stateIn
  * ViewModel for the [ArticleActivity] screen.
  * The ViewModel works with the [ArticleRepository] to get the data.
  */
-private const val ITEMS_PER_PAGE = 50
+private const val ITEMS_PER_PAGE = 10
 
-class ArticleViewModel(repository: ArticleRepository, ) : ViewModel() {
+class ArticleViewModel(repository: ArticleRepository) : ViewModel() {
 
     /**
      * Stream of [Article]s for the UI.
@@ -56,9 +57,11 @@ class ArticleViewModel(repository: ArticleRepository, ) : ViewModel() {
     // -> flow를 다른 flow와 혼합하면 안된다.
 
     val items: Flow<PagingData<Article>> = Pager(
-        config = PagingConfig(pageSize = ITEMS_PER_PAGE, enablePlaceholders = false),
-        pagingSourceFactory = { repository.articlePagingSource()}
-        // pagingSourceFactory 람다는 PagingSource 인스턴스ㅡㄹ 재사용할 수 없으므로 호출되는 경우 항상
+        config = PagingConfig(pageSize = ITEMS_PER_PAGE, enablePlaceholders = true),
+        pagingSourceFactory = {
+            repository.articlePagingSource()
+        }
+        // pagingSourceFactory 람다는 PagingSource 인스턴스를 재사용할 수 없으므로 호출되는 경우 항상
         // 완전히 새로운 PagingSource를 반환해야 한다.
     ).flow
 }

@@ -17,6 +17,7 @@
 package com.example.android.codelabs.paging.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -25,10 +26,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.LoadState
+import androidx.paging.filter
+import androidx.paging.map
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.android.codelabs.paging.Injection
+import com.example.android.codelabs.paging.data.Article
 import com.example.android.codelabs.paging.databinding.ActivityArticlesBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -42,15 +46,14 @@ class ArticleActivity : AppCompatActivity() {
         setContentView(view)
 
         // Get the view model
-        val viewModel by viewModels<ArticleViewModel>(
-            factoryProducer = { Injection.provideViewModelFactory(owner = this) }
-        )
+        val viewModel by viewModels<ArticleViewModel>(factoryProducer = { Injection.provideViewModelFactory(owner = this) })
 
         val items = viewModel.items
         val articleAdapter = ArticleAdapter()
 
         binding.bindAdapter(articleAdapter = articleAdapter)
 
+        /** **/
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 articleAdapter.loadStateFlow.collect {
@@ -67,6 +70,7 @@ class ArticleActivity : AppCompatActivity() {
             // but still visible on the screen, for example in a multi window app
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 items.collectLatest {
+                    Log.d("페이징 로드 : ", "로드")
                     articleAdapter.submitData(it)
                 }
             }
