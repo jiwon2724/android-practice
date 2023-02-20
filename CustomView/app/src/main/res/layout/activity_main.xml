@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <com.jiwondev.android_customview_practice.CustomLoginButton
+        android:id="@+id/customLoginButton"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:symbol="@drawable/icon1"
+        app:text="버튼1" />
+
+    <com.jiwondev.android_customview_practice.CustomLoginButton
+        android:id="@+id/customLoginButton2"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/customLoginButton"
+        app:symbol="@drawable/icon2"
+        app:text="버튼2" />
+
+    <com.jiwondev.android_customview_practice.CustomLoginButton
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/customLoginButton2"
+        app:symbol="@drawable/icon3"
+        app:text="버튼3" />
+</androidx.constraintlayout.widget.ConstraintLayout>
