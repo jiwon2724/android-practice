@@ -84,16 +84,12 @@ class TasksViewModel(
     }
 
 
-    fun enableSortByDeadline(enable: Boolean) {
-        viewModelScope.launch {
-            userPreferencesRepository.enableSortByDeadline(enable)
-        }
+    fun enableSortByDeadline(enable: Boolean) =  viewModelScope.launch {
+        userPreferencesRepository.enableSortByDeadline(enable)
     }
 
-    fun enableSortByPriority(enable: Boolean) {
-        viewModelScope.launch {
-            userPreferencesRepository.enableSortByPriority(enable)
-        }
+    fun enableSortByPriority(enable: Boolean) = viewModelScope.launch {
+        userPreferencesRepository.enableSortByPriority(enable)
     }
 }
 

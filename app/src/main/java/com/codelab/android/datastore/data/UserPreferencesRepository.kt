@@ -33,6 +33,8 @@ enum class SortOrder {
     BY_DEADLINE_AND_PRIORITY
 }
 
+/** App.prefs.getString(Contant.auto_login) **/
+
 private object PreferencesKeys {
     val SORT_ORDER = stringPreferencesKey("sort_order")
     val SHOW_COMPLETED = booleanPreferencesKey("show_completed")
@@ -46,6 +48,7 @@ data class UserPreferences(
 class UserPreferencesRepository(private val dataStore: DataStore<Preferences>, context: Context) {
     private val sharedPreferences = context.applicationContext.getSharedPreferences(USER_PREFERENCES_NAME, Context.MODE_PRIVATE)
 
+    /** 읽기 **/
     val userPreferencesFlow: Flow<UserPreferences> = dataStore.data
         .catch { exception ->
             if(exception is IOException) {
@@ -56,12 +59,11 @@ class UserPreferencesRepository(private val dataStore: DataStore<Preferences>, c
         }
         .map { preferences ->
             val showCompleted = preferences[PreferencesKeys.SHOW_COMPLETED] ?: false
-            val sortOrder = SortOrder.valueOf(
-                preferences[PreferencesKeys.SORT_ORDER] ?: SortOrder.NONE.name
-            )
+            val sortOrder = SortOrder.valueOf(preferences[PreferencesKeys.SORT_ORDER] ?: SortOrder.NONE.name)
             UserPreferences(showCompleted, sortOrder)
         }
 
+    /** 쓰기 **/
     suspend fun enableSortByDeadline(enable: Boolean) {
         dataStore.edit { preferences ->
             val currentOrder = SortOrder.valueOf(preferences[PreferencesKeys.SORT_ORDER] ?: SortOrder.NONE.name)

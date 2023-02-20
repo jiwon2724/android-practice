@@ -18,6 +18,7 @@ package com.codelab.android.datastore.ui
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Base64
 import androidx.appcompat.app.AppCompatActivity
 import androidx.datastore.dataStore
 import androidx.datastore.preferences.SharedPreferencesMigration
