@@ -49,13 +49,6 @@ class MainViewModel(private val mainRepository: MainRepository) : ViewModel() {
      *
      * **/
 
-    suspend fun simple() { // flow builder
-        repeat(10) {
-            _sharedFlow.emit(it)
-            Log.d("repeat : ", it.toString())
-        }
-    }
-
 
     fun getRepositories(username: String) = viewModelScope.launch {
         val response = mainRepository.getUserRepositories(username)
