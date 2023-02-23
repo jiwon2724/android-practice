@@ -1,4 +1,4 @@
-# android-paging-main
+# android-paging-main-codelab
 Android Paging 기본사항 코드랩
 https://developer.android.com/codelabs/android-paging-basics?hl=ko#0
 
